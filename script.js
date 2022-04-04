@@ -123,30 +123,41 @@
       return alert_app_has_changed();
     }
 
+    let has_exitted_note = false;
+    (async function() {
+      has_exitted_note = (document.querySelectorAll("[contenteditable=\"true\"]").length != 4);
+      if (has_exitted_note) return;
+      await sleep(200);
+    })();
+
     while (elements_len > (note_idx+2))
     {
       if (note_idx == 0)
       {
         const note_title = elements[note_idx];
-
-        if (apply_to_note(note_title)) break;
-
-        if (apply_to_note_title(note_title)) break;
+        try { // Note is possibly undefined (if it gets closed after the check).
+          if (has_exitted_note || apply_to_note(note_title)) break;
+          if (has_exitted_note || apply_to_note_title(note_title)) break;
+        } catch (err) {
+          console.warn(err);
+        }
       }
       else
       if (note_idx == 1)
       {
         const note_body = elements[note_idx];
-
-        if (apply_to_note(note_body)) break;
-
-        if (apply_to_note_body(note_body)) break;
+        try { // Note is possibly undefined (if it gets closed after the check).
+          if (has_exitted_note || apply_to_note(note_body)) break;
+          if (has_exitted_note || apply_to_note_body(note_body)) break;
+        } catch (err) {
+          console.warn(err);
+        }
       }
       else
       {
         return alert_app_has_changed();
       }
-      note_idx %= 2;
+      note_idx = (note_idx + 1) % 2;
     }
   }
 
