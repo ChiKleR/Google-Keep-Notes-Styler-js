@@ -127,20 +127,20 @@
     (async function() {
       has_exitted_note = (document.querySelectorAll("[contenteditable=\"true\"]").length != 4);
       if (has_exitted_note) return;
-      await sleep(200);
+      await sleep(200); // @TO-DO: Wait for changes instead of periodically updating.
     })();
 
     (async function() {
       while (elements_len > (note_idx+2))
       {
+        const note = elements[note_idx+2];
+
         if (note_idx == 0)
         {
-          const note_title = elements[note_idx];
-
           try { // Note is possibly undefined (if it gets closed after the check).
             if (has_exitted_note) return false;
-            if (apply_to_note(note_title)) break;
-            if (apply_to_note_title(note_title)) break;
+            if (apply_to_note(note)) break;
+            if (apply_to_note_title(note)) break;
           } catch (err) {
             console.warn(err);
           }
@@ -148,12 +148,10 @@
         else
         if (note_idx == 1)
         {
-          const note_body = elements[note_idx];
-
           try { // Note is possibly undefined (if it gets closed after the check).
             if (has_exitted_note) return false;
-            if (apply_to_note(note_body)) break;
-            if (apply_to_note_body(note_body)) break;
+            if (apply_to_note(note)) break;
+            if (apply_to_note_body(note)) break;
           } catch (err) {
             console.warn(err);
           }
@@ -166,7 +164,7 @@
         const note_idx_before = note_idx;
         note_idx = (note_idx + 1) % 2;
 
-        if (note_idx_before == 1) await sleep(1000);
+        if (note_idx_before == 1) await sleep(1000); // @TO-DO: Wait for changes instead of periodically updating.
       }
     })();
   }
