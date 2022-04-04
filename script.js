@@ -144,10 +144,13 @@
     }
     catch (err) {
       console.warn(err);
+      return false;
     }
 
     while (elements_len > (note_idx+2))
     {
+      if (has_exitted_note) return false;
+
       const note = elements[note_idx+2];
 
       if (note_idx == 0)
@@ -157,6 +160,7 @@
           apply_to_note_title_periodically(note);
         } catch (err) {
           console.warn(err);
+          return false;
         }
       }
       else
@@ -167,6 +171,7 @@
           apply_to_note_body_periodically(note);
         } catch (err) {
           console.warn(err);
+          return false;
         }
       }
       else
