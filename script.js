@@ -107,7 +107,7 @@
 
   // ↓↓↓ DEVELOPER ZONE ↓↓↓ //
 
-  function main()
+  async function main()
   {
     const elements = document.querySelectorAll("[contenteditable=\"true\"]");
     const elements_len = elements.length;
@@ -131,57 +131,54 @@
       await sleep(200); // @TO-DO: Wait for changes instead of periodically updating.
     })();
 
-    (async function() {
+    try // Note is possibly undefined (if it gets closed after the check).
+    {
+      const note_title = elements[2];
+      const note_body  = elements[3];
 
-      try // Note is possibly undefined (if it gets closed after the check).
+      apply_to_note_on_open(note_title);
+      apply_to_note_title_on_open(note_title);
+
+      apply_to_note_on_open(note_body);
+      apply_to_note_body_on_open(note_body);
+    }
+    catch (err) {
+      console.warn(err);
+    }
+
+    while (elements_len > (note_idx+2))
+    {
+      const note = elements[note_idx+2];
+
+      if (note_idx == 0)
       {
-        const note_title = elements[2];
-        const note_body  = elements[3];
-
-        apply_to_note_on_open(note_title);
-        apply_to_note_title_on_open(note_title);
-
-        apply_to_note_on_open(note_body);
-        apply_to_note_body_on_open(note_body);
+        try { // Note is possibly undefined (if it gets closed after the check).
+          apply_to_note_periodically(note);
+          apply_to_note_title_periodically(note);
+        } catch (err) {
+          console.warn(err);
+        }
       }
-      catch (err) {
-        console.warn(err);
-      }
-
-      while (elements_len > (note_idx+2))
+      else
+      if (note_idx == 1)
       {
-        const note = elements[note_idx+2];
-
-        if (note_idx == 0)
-        {
-          try { // Note is possibly undefined (if it gets closed after the check).
-            apply_to_note_periodically(note);
-            apply_to_note_title_periodically(note);
-          } catch (err) {
-            console.warn(err);
-          }
+        try { // Note is possibly undefined (if it gets closed after the check).
+          apply_to_note_periodically(note);
+          apply_to_note_body_periodically(note);
+        } catch (err) {
+          console.warn(err);
         }
-        else
-        if (note_idx == 1)
-        {
-          try { // Note is possibly undefined (if it gets closed after the check).
-            apply_to_note_periodically(note);
-            apply_to_note_body_periodically(note);
-          } catch (err) {
-            console.warn(err);
-          }
-        }
-        else
-        {
-          return alert_app_has_changed();
-        }
-
-        const note_idx_before = note_idx;
-        note_idx = (note_idx + 1) % 2;
-
-        if (note_idx_before == 1) await sleep(1000); // @TO-DO: Wait for changes instead of periodically updating.
       }
-    })();
+      else
+      {
+        return alert_app_has_changed();
+      }
+
+      const note_idx_before = note_idx;
+      note_idx = (note_idx + 1) % 2;
+
+      if (note_idx_before == 1) await sleep(1000); // @TO-DO: Wait for changes instead of periodically updating.
+    }
   }
 
 
@@ -190,7 +187,7 @@
   **/
   while (true)
   {
-    if (main()) break;
+    if (await main()) break;
     await sleep(1000); // @TO-DO: Wait for changes instead of periodically updating.
   }
 
