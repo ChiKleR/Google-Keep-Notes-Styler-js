@@ -130,35 +130,45 @@
       await sleep(200);
     })();
 
-    while (elements_len > (note_idx+2))
-    {
-      if (note_idx == 0)
+    (async function() {
+      while (elements_len > (note_idx+2))
       {
-        const note_title = elements[note_idx];
-        try { // Note is possibly undefined (if it gets closed after the check).
-          if (has_exitted_note || apply_to_note(note_title)) return false;
-          if (has_exitted_note || apply_to_note_title(note_title)) return false;
-        } catch (err) {
-          console.warn(err);
+        if (note_idx == 0)
+        {
+          const note_title = elements[note_idx];
+
+          try { // Note is possibly undefined (if it gets closed after the check).
+            if (has_exitted_note) return false;
+            if (apply_to_note(note_title)) break;
+            if (apply_to_note_title(note_title)) break;
+          } catch (err) {
+            console.warn(err);
+          }
         }
-      }
-      else
-      if (note_idx == 1)
-      {
-        const note_body = elements[note_idx];
-        try { // Note is possibly undefined (if it gets closed after the check).
-          if (has_exitted_note || apply_to_note(note_body)) return false;
-          if (has_exitted_note || apply_to_note_body(note_body)) return false;
-        } catch (err) {
-          console.warn(err);
+        else
+        if (note_idx == 1)
+        {
+          const note_body = elements[note_idx];
+
+          try { // Note is possibly undefined (if it gets closed after the check).
+            if (has_exitted_note) return false;
+            if (apply_to_note(note_body)) break;
+            if (apply_to_note_body(note_body)) break;
+          } catch (err) {
+            console.warn(err);
+          }
         }
+        else
+        {
+          return alert_app_has_changed();
+        }
+
+        const note_idx_before = note_idx;
+        note_idx = (note_idx + 1) % 2;
+
+        if (not_idx_before == 1) await sleep(1000);
       }
-      else
-      {
-        return alert_app_has_changed();
-      }
-      note_idx = (note_idx + 1) % 2;
-    }
+    })();
   }
 
 
