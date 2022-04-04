@@ -2,7 +2,7 @@
 // @name         Google Keep Notes Styler
 // @namespace    http://tampermonkey.net/
 // @version      0.0.0
-// @description  Editable script for styling Google Keep Notes. Changes the current note's font to "Consolas" by default (resets on page refresh).
+// @description  Editable script for styling Google Keep Notes. Changes the current note's font to monospace by default (resets on page refresh).
 // @author       ChiKleR
 // @match        https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=en
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=google.com
