@@ -166,7 +166,7 @@
         const note_idx_before = note_idx;
         note_idx = (note_idx + 1) % 2;
 
-        if (not_idx_before == 1) await sleep(1000);
+        if (note_idx_before == 1) await sleep(1000);
       }
     })();
   }
