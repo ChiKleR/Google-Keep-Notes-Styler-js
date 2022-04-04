@@ -4,7 +4,6 @@
 // @version      0.0.0
 // @description  Editable script for styling Google Keep Notes. Changes the current note's font to monospace by default (resets on page refresh).
 // @author       ChiKleR
-// @include      https://keep.google.com/#NOTE/*
 // @match        https://keep.google.com/#NOTE/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=google.com
 // @grant        none
