@@ -136,8 +136,8 @@
       {
         const note_title = elements[note_idx];
         try { // Note is possibly undefined (if it gets closed after the check).
-          if (has_exitted_note || apply_to_note(note_title)) break;
-          if (has_exitted_note || apply_to_note_title(note_title)) break;
+          if (has_exitted_note || apply_to_note(note_title)) return false;
+          if (has_exitted_note || apply_to_note_title(note_title)) return false;
         } catch (err) {
           console.warn(err);
         }
@@ -147,8 +147,8 @@
       {
         const note_body = elements[note_idx];
         try { // Note is possibly undefined (if it gets closed after the check).
-          if (has_exitted_note || apply_to_note(note_body)) break;
-          if (has_exitted_note || apply_to_note_body(note_body)) break;
+          if (has_exitted_note || apply_to_note(note_body)) return false;
+          if (has_exitted_note || apply_to_note_body(note_body)) return false;
         } catch (err) {
           console.warn(err);
         }
