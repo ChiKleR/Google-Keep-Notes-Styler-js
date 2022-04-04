@@ -20,7 +20,7 @@
 
   // ↓↓↓ USER ZONE ↓↓↓ //
 
-  function apply_to_note(note)
+  function apply_to_note_on_open(note)
   {
     // you can even apply filters depending on tags! (although manually for this version)
 
@@ -36,7 +36,7 @@
     return false;
   }
 
-  function apply_to_note_title(note_title)
+  function apply_to_note_title_on_open(note_title)
   {
     // add styles to note_title
 
@@ -44,7 +44,7 @@
     return false;
   }
 
-  function apply_to_note_body(note_body)
+  function apply_to_note_body_on_open(note_body)
   {
     // example web-safe font cascade
     note_body.style.fontFamily = "Courier New, monospace";
@@ -131,6 +131,24 @@
     })();
 
     (async function() {
+
+      try // Note is possibly undefined (if it gets closed after the check).
+      {
+        if (has_exitted_note) return false;
+
+        const note_title = elements[2];
+        const note_body  = elements[3];
+
+        apply_to_note_on_open(note_title);
+        apply_to_note_title_on_open(note_title);
+
+        apply_to_note_on_open(note_body);
+        apply_to_note_title_on_open(note_body);
+      }
+      catch (err) {
+        console.warn(err);
+      }
+
       while (elements_len > (note_idx+2))
       {
         const note = elements[note_idx+2];
@@ -139,8 +157,8 @@
         {
           try { // Note is possibly undefined (if it gets closed after the check).
             if (has_exitted_note) return false;
-            if (apply_to_note(note)) break;
-            if (apply_to_note_title(note)) break;
+            if (apply_to_note_periodically(note)) break;
+            if (apply_to_note_title_periodically(note)) break;
           } catch (err) {
             console.warn(err);
           }
@@ -150,8 +168,8 @@
         {
           try { // Note is possibly undefined (if it gets closed after the check).
             if (has_exitted_note) return false;
-            if (apply_to_note(note)) break;
-            if (apply_to_note_body(note)) break;
+            if (apply_to_note_periodically(note)) break;
+            if (apply_to_note_body_periodically(note)) break;
           } catch (err) {
             console.warn(err);
           }
