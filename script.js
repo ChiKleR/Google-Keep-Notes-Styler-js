@@ -116,37 +116,37 @@
       return false;
     }
 
-    let elements_idx = 2;
+    let note_idx = 0;
 
-    if (!(elements_idx < elements_len))
+    if (elements_len <= (note_idx+2))
     {
       return alert_app_has_changed();
     }
 
-    while (elements_idx < elements_len)
+    while (elements_len > (note_idx+2))
     {
-    if (elements_idx == 2)
-    {
-      const note_title = elements[elements_idx];
+      if (note_idx == 0)
+      {
+        const note_title = elements[note_idx];
 
-      if (apply_to_note(note_title)) break;
+        if (apply_to_note(note_title)) break;
 
-      if (apply_to_note_title(note_title)) break;
-    }
-    else
-    if (elements_idx == 3)
-    {
-      const note_body = elements[elements_idx];
+        if (apply_to_note_title(note_title)) break;
+      }
+      else
+      if (note_idx == 1)
+      {
+        const note_body = elements[note_idx];
 
-      if (apply_to_note(note_body)) break;
+        if (apply_to_note(note_body)) break;
 
-      if (apply_to_note_body(note_body)) break;
-    }
-    else
-    {
-      return alert_app_has_changed();
-    }
-    ++elements_idx;
+        if (apply_to_note_body(note_body)) break;
+      }
+      else
+      {
+        return alert_app_has_changed();
+      }
+      note_idx %= 2;
     }
   }
 
