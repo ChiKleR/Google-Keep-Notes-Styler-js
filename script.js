@@ -22,26 +22,15 @@
 
   function apply_to_note_on_open(note)
   {
-    // you can even apply filters depending on tags! (although manually for this version)
-
-
     note.style.fontFamily = "Garamond, serif";
 
     const prev_font_size = window.getComputedStyle(note)["font-size"];
     note.style["font-size"] = `${(+prev_font_size.split("px")[0])+3}px`; // @TO-DO: use ``font-size-adjust`` or something similar (it's only supported in Firefox)
-
-
-    // return ``false`` to skip.
-    // return ``true`` to break.
-    return false;
   }
 
   function apply_to_note_title_on_open(note_title)
   {
-    // add styles to note_title
-
-
-    return false;
+    // add styles to note_title on open
   }
 
   function apply_to_note_body_on_open(note_body)
@@ -52,9 +41,36 @@
 
     const prev_font_size = window.getComputedStyle(note_body)["font-size"];
     note_body.style["font-size"] = `${(+prev_font_size.split("px")[0])-2}px`; // @TO-DO: use ``font-size-adjust`` or something similar (it's only supported in Firefox)
+  }
+
+  function apply_to_note_periodically(note)
+  {
+    // add styles to note periodically
 
 
-    return true;
+    // return ``false`` to skip.
+    // return ``true`` to break.
+    return false;
+  }
+
+  function apply_to_note_title_periodically(note_title)
+  {
+    // add styles to note_title periodically
+
+
+    // return ``false`` to skip.
+    // return ``true`` to break.
+    return false;
+  }
+
+  function apply_to_note_body_periodically(note_body)
+  {
+    // add styles to note_body periodically
+
+
+    // return ``false`` to skip.
+    // return ``true`` to break.
+    return false;
   }
 
   // ↑↑↑ USER ZONE ↑↑↑ //
