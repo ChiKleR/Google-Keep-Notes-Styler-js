@@ -2,9 +2,9 @@
 // @name         Google Keep Notes Styler
 // @namespace    http://tampermonkey.net/
 // @version      0.0.0
-// @description  Editable script for styling Google Keep Notes. Changes the current note's font to monospace by default (resets on page refresh).
+// @description  Editable script for manually styling Google Keep Notes with utility functions. Affects only the visibility of the notes and resets on page refresh.
 // @author       ChiKleR
-// @match        https://keep.google.com/#NOTE/*
+// @match        https://keep.google.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=google.com
 // @grant        none
 // ==/UserScript==
@@ -14,7 +14,7 @@
 // Automatically refresh each time a note is open: pending.
 
 
-(function() {
+(async function() {
   "use strict";
 
 
@@ -110,51 +110,74 @@
   {
     const elements = document.querySelectorAll("[contenteditable=\"true\"]");
     const elements_len = elements.length;
-        let elements_idx = 2;
 
-    if (elements_idx < elements_len)
+    if (elements_len < 4)
     {
-        while (elements_idx < elements_len)
-        {
-        if (elements_idx == 2)
-        {
-            const note_title = elements[elements_idx];
+      return false;
+    }
 
-            if (apply_to_note(note_title)) break;
+    let elements_idx = 2;
 
-            if (apply_to_note_title(note_title)) break;
-        }
-        else
-        if (elements_idx == 3)
-        {
-            const note_body = elements[elements_idx];
+    if (!(elements_idx < elements_len))
+    {
+      return alert_app_has_changed();
+    }
 
-            if (apply_to_note(note_body)) break;
+    while (elements_idx < elements_len)
+    {
+    if (elements_idx == 2)
+    {
+      const note_title = elements[elements_idx];
 
-            if (apply_to_note_body(note_body)) break;
-        }
-        else
-        {
-            alert_app_has_changed();
-            break;
-        }
-        ++elements_idx;
-        }
+      if (apply_to_note(note_title)) break;
+
+      if (apply_to_note_title(note_title)) break;
+    }
+    else
+    if (elements_idx == 3)
+    {
+      const note_body = elements[elements_idx];
+
+      if (apply_to_note(note_body)) break;
+
+      if (apply_to_note_body(note_body)) break;
     }
     else
     {
-        alert_app_has_changed();
+      return alert_app_has_changed();
     }
+    ++elements_idx;
+    }
+  }
+
+
+  /**
+   * Notes update loop (only affects open notes).
+  **/
+  while (true)
+  {
+    if (main()) break;
+    await sleep(1000); // @TO-DO: Wait for changes instead of periodically updating.
+  }
+
+
+  /**
+   * Must use ``await``.
+  **/
+  async function sleep(ms)
+  {
+    return (
+      new Promise((resolve) => setTimeout(resolve, ms))
+    );
   }
 
 
   function alert_app_has_changed()
   {
-    alert("Something changed in the Google Keep Notes app since the creation of this script (it needs to be updated).");
+    return confirm(
+      "Google Keep Notes Styler says:\nSomething changed in the Google Keep Notes app since the creation of this script (it needs to be updated).\nClose the script?"
+    );
   }
 
   // ↑↑↑ DEVELOPER ZONE ↑↑↑ //
-
-
-  main();
 })();
