@@ -142,7 +142,7 @@
     let has_exitted_note = false;
     (async function() {
       has_exitted_note = (document.querySelectorAll("[contenteditable=\"true\"]").length != 4);
-      if (has_exitted_note) return;
+      if (has_exitted_note) return false;
       await sleep(200); // @TO-DO: Wait for changes instead of periodically updating.
     })();
 
@@ -150,8 +150,6 @@
 
       try // Note is possibly undefined (if it gets closed after the check).
       {
-        if (has_exitted_note) return false;
-
         const note_title = elements[2];
         const note_body  = elements[3];
 
@@ -159,7 +157,7 @@
         apply_to_note_title_on_open(note_title);
 
         apply_to_note_on_open(note_body);
-        apply_to_note_title_on_open(note_body);
+        apply_to_note_body_on_open(note_body);
       }
       catch (err) {
         console.warn(err);
@@ -172,7 +170,6 @@
         if (note_idx == 0)
         {
           try { // Note is possibly undefined (if it gets closed after the check).
-            if (has_exitted_note) return false;
             if (apply_to_note_periodically(note)) break;
             if (apply_to_note_title_periodically(note)) break;
           } catch (err) {
@@ -183,7 +180,6 @@
         if (note_idx == 1)
         {
           try { // Note is possibly undefined (if it gets closed after the check).
-            if (has_exitted_note) return false;
             if (apply_to_note_periodically(note)) break;
             if (apply_to_note_body_periodically(note)) break;
           } catch (err) {
