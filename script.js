@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Google Keep Notes Styler
+// @name         Google-Keep-Notes-Styler
 // @namespace    http://tampermonkey.net/
 // @version      0.0.0
 // @description  Editable script for manually styling Google Keep Notes with utility functions. Affects only the visibility of the notes and resets on page refresh.
@@ -186,7 +186,7 @@
   function alert_app_has_changed()
   {
     return confirm(
-      "Google Keep Notes Styler says:\nSomething changed in the Google Keep Notes app since the creation of this script (it needs to be updated).\nClose the script?"
+      "Google-Keep-Notes-Styler says:\nSomething changed in the Google Keep Notes app since the creation of this script (it needs to be updated).\nClose the script?"
     );
   }
 
