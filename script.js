@@ -46,31 +46,16 @@
   function apply_to_note_periodically(note)
   {
     // add styles to note periodically
-
-
-    // return ``false`` to skip.
-    // return ``true`` to break.
-    return false;
   }
 
   function apply_to_note_title_periodically(note_title)
   {
     // add styles to note_title periodically
-
-
-    // return ``false`` to skip.
-    // return ``true`` to break.
-    return false;
   }
 
   function apply_to_note_body_periodically(note_body)
   {
     // add styles to note_body periodically
-
-
-    // return ``false`` to skip.
-    // return ``true`` to break.
-    return false;
   }
 
   // ↑↑↑ USER ZONE ↑↑↑ //
@@ -170,8 +155,8 @@
         if (note_idx == 0)
         {
           try { // Note is possibly undefined (if it gets closed after the check).
-            if (apply_to_note_periodically(note)) break;
-            if (apply_to_note_title_periodically(note)) break;
+            apply_to_note_periodically(note);
+            apply_to_note_title_periodically(note);
           } catch (err) {
             console.warn(err);
           }
@@ -180,8 +165,8 @@
         if (note_idx == 1)
         {
           try { // Note is possibly undefined (if it gets closed after the check).
-            if (apply_to_note_periodically(note)) break;
-            if (apply_to_note_body_periodically(note)) break;
+            apply_to_note_periodically(note);
+            apply_to_note_body_periodically(note);
           } catch (err) {
             console.warn(err);
           }
