@@ -11,7 +11,9 @@
 
 
 // Goal: pending|done.
-// Automatically refresh each time a note is open: pending.
+// After a note is closed, wait for a note to load: pending.
+// After a note is closed, when a note loads, enter update loop: pending.
+// When a new note is being created, enter update loop: pending.
 
 
 (async function() {
