@@ -22,7 +22,7 @@
 
   // ↓↓↓ USER ZONE ↓↓↓ //
 
-  function apply_to_note_on_open(note)
+  function apply_to_note_on_open(note, tags)
   {
     note.style.fontFamily = "Garamond, serif";
 
@@ -30,12 +30,12 @@
     note.style["font-size"] = `${(+prev_font_size.split("px")[0])+3}px`; // @TO-DO: use ``font-size-adjust`` or something similar (it's only supported in Firefox)
   }
 
-  function apply_to_note_title_on_open(note_title)
+  function apply_to_note_title_on_open(note_title, tags)
   {
     // add styles to note_title on open
   }
 
-  function apply_to_note_body_on_open(note_body)
+  function apply_to_note_body_on_open(note_body, tags)
   {
     // example web-safe font cascade
     note_body.style.fontFamily = "Courier New, monospace";
@@ -45,17 +45,17 @@
     note_body.style["font-size"] = `${(+prev_font_size.split("px")[0])-2}px`; // @TO-DO: use ``font-size-adjust`` or something similar (it's only supported in Firefox)
   }
 
-  function apply_to_note_periodically(note)
+  function apply_to_note_periodically(note, tags)
   {
     // add styles to note periodically
   }
 
-  function apply_to_note_title_periodically(note_title)
+  function apply_to_note_title_periodically(note_title, tags)
   {
     // add styles to note_title periodically
   }
 
-  function apply_to_note_body_periodically(note_body)
+  function apply_to_note_body_periodically(note_body, tags)
   {
     // add styles to note_body periodically
   }
@@ -65,7 +65,7 @@
 
   // ↓↓↓ USER HELPER FUNCTIONS ↓↓↓ //
 
-  function do_if_tag_found(tag, cb)
+  function do_if_tag_found(tags, tag, cb)
   {
     alert("``do_if_tag_found`` is yet to be implemented!");
   }
@@ -138,11 +138,13 @@
       const note_title = elements[2];
       const note_body  = elements[3];
 
-      apply_to_note_on_open(note_title);
-      apply_to_note_title_on_open(note_title);
+      const tags = [];
 
-      apply_to_note_on_open(note_body);
-      apply_to_note_body_on_open(note_body);
+      apply_to_note_on_open(note_title, tags);
+      apply_to_note_title_on_open(note_title, tags);
+
+      apply_to_note_on_open(note_body, tags);
+      apply_to_note_body_on_open(note_body, tags);
     }
     catch (err) {
       console.warn(err);
@@ -155,11 +157,13 @@
 
       const note = elements[note_idx+2];
 
+      const tags = [];
+
       if (note_idx == 0)
       {
         try { // Note is possibly undefined (if it gets closed after the check).
-          apply_to_note_periodically(note);
-          apply_to_note_title_periodically(note);
+          apply_to_note_periodically(note, tags);
+          apply_to_note_title_periodically(note, tags);
         } catch (err) {
           console.warn(err);
           return false;
@@ -169,8 +173,8 @@
       if (note_idx == 1)
       {
         try { // Note is possibly undefined (if it gets closed after the check).
-          apply_to_note_periodically(note);
-          apply_to_note_body_periodically(note);
+          apply_to_note_periodically(note, tags);
+          apply_to_note_body_periodically(note, tags);
         } catch (err) {
           console.warn(err);
           return false;
