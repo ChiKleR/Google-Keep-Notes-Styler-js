@@ -127,7 +127,7 @@
     let has_exitted_note = false;
     (async function() {
       has_exitted_note = (document.querySelectorAll("[contenteditable=\"true\"]").length != 4);
-      if (has_exitted_note) return false;
+      if (has_exitted_note) console.log("exit note"); return false;
       await sleep(200); // @TO-DO: Wait for changes instead of periodically updating.
     })();
 
@@ -193,7 +193,7 @@
   while (true)
   {
     if (await main()) break;
-    await sleep(1000); // @TO-DO: Wait for changes instead of periodically updating.
+    await sleep(200); // @TO-DO: Wait for changes instead of periodically updating.
   }
 
 
