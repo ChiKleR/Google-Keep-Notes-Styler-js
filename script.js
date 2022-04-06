@@ -14,6 +14,10 @@
 // After a note is closed, wait for a note to load: pending.
 // After a note is closed, when a note loads, enter update loop: pending.
 // When a new note is being created, enter update loop: pending.
+// Widen notes optionally: done.
+  // Center widened notes: pending.
+  // Add a scroller for widened notes: pending.
+// Fix a bug where when an unexpected error is thrown, since the Try-Catch statements return false, it triggers on_open indefinetly: pending.
 
 
 (async function() {
@@ -32,7 +36,34 @@
 
   function apply_to_note_title_on_open(note_title, tags)
   {
-    // add styles to note_title on open
+    // increase width of the note itself (disabled by default)
+    {
+      let parents = [];
+
+      for (let parents_idx = 0; parents_idx < 5; parents_idx++)
+      {
+        if (parents_idx == 0)
+        {
+          parents[parents_idx] = note_title.parentElement;
+        }
+        else
+        {
+          parents[parents_idx] = parents[parents_idx - 1].parentElement;
+        }
+
+        if (parents[parents_idx].tagName.toLowerCase() != "div") return;
+      }
+
+      const parents_len = parents.length;
+        let parents_idx = 0;
+
+      while (parents_idx < parents_len)
+      {
+        // parents[parents_idx].style.width = "60em"; // 60 characters is the average length of a code line
+
+        ++parents_idx;
+      }
+    }
   }
 
   function apply_to_note_body_on_open(note_body, tags)
