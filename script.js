@@ -17,7 +17,6 @@
 // Done- Widen notes optionally.
   // Pending- Center widened notes.
   // Pending- Add a scroller for widened notes.
-// Done- Fix a bug where when an unexpected warning or error is thrown, since the Try-Catch statements return false, it triggers on_open indefinetly.
 
 
 (async function() {
@@ -200,6 +199,10 @@
         return alert_app_has_changed();
       }
 
+
+      // Even if a note is closed after being checked, the DOM element won't be
+      // garbage-collected until all references to it are deleted. Thus, there is no
+      // need to catch an undefined error, and we can simply exit in the next iteration.
       let has_exitted_note = false;
 
       (async function()
@@ -212,27 +215,16 @@
         await sleep(200);
       })();
 
-      // Each note part should be undefined if the note gets closed after the check.
-      try
-      {
-        const note_head = elements[2];
-        const note_body = elements[3];
+      const note_head = elements[2];
+      const note_body = elements[3];
 
-        const tags = [];
+      const tags = [];
 
-        if (apply_to_note_part_on_open(note_head, tags)) return true;
-        if (apply_to_note_head_on_open(note_head, tags)) return true;
+      if (apply_to_note_part_on_open(note_head, tags)) return true;
+      if (apply_to_note_head_on_open(note_head, tags)) return true;
 
-        if (apply_to_note_part_on_open(note_body, tags)) return true;
-        if (apply_to_note_body_on_open(note_body, tags)) return true;
-      }
-      catch (err)
-      {
-        return (
-          (err.message.indexOf("note_head is not defined") == -1) &&
-          (err.message.indexOf("note_body is not defined") == -1)
-        );
-      }
+      if (apply_to_note_part_on_open(note_body, tags)) return true;
+      if (apply_to_note_body_on_open(note_body, tags)) return true;
 
       while (elements_len > (note_part_idx+2))
       {
@@ -244,36 +236,14 @@
 
         if (note_part_idx == 0)
         {
-          // Each note part should be undefined if the note gets closed after the check.
-          try
-          {
-            if (apply_to_note_part_periodically(note_part, tags)) return true;
-            if (apply_to_note_head_periodically(note_part, tags)) return true;
-          }
-          catch (err)
-          {
-            return (
-              (err.message.indexOf("note_part is not defined") == -1) &&
-              (err.message.indexOf("note_head is not defined") == -1)
-            );
-          }
+          if (apply_to_note_part_periodically(note_part, tags)) return true;
+          if (apply_to_note_head_periodically(note_part, tags)) return true;
         }
         else
         if (note_part_idx == 1)
         {
-          // Each note part should be undefined if the note gets closed after the check.
-          try
-          {
-            if (apply_to_note_part_periodically(note_part, tags)) return true;
-            if (apply_to_note_body_periodically(note_part, tags)) return true;
-          }
-          catch (err)
-          {
-            return (
-              (err.message.indexOf("note_part is not defined") == -1) &&
-              (err.message.indexOf("note_body is not defined") == -1)
-            );
-          }
+          if (apply_to_note_part_periodically(note_part, tags)) return true;
+          if (apply_to_note_body_periodically(note_part, tags)) return true;
         }
         else
         {
