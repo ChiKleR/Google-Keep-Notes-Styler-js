@@ -10,33 +10,103 @@
 // ==/UserScript==
 
 
-// Goal: pending|done|broken.
-// After a note is closed, wait for a note to load: pending.
-// After a note is closed, when a note loads, enter update loop: pending.
-// When a new note is being created, enter update loop: pending.
-// Widen notes optionally: done.
-  // Center widened notes: pending.
-  // Add a scroller for widened notes: pending.
-// Fix a bug where when an unexpected error is thrown, since the Try-Catch statements return false, it triggers on_open indefinetly: pending.
+// (Pending|Near|Done|Broken)- Goal.
+// Pending- After a note is closed, wait for a note to load.
+// Pending- After a note is closed, when a note loads, enter update loop.
+// Pending- When a new note is being created, enter update loop.
+// Done- Widen notes optionally.
+  // Pending- Center widened notes.
+  // Pending- Add a scroller for widened notes.
+// Done- Fix a bug where when an unexpected warning or error is thrown, since the Try-Catch statements return false, it triggers on_open indefinetly.
 
 
 (async function() {
-  "use strict";
+    "use strict";
 
 
-  // ↓↓↓ USER ZONE ↓↓↓ //
+    // ↓↓↓ USER ZONE ↓↓↓ //
 
-  function apply_to_note_on_open(note, tags)
-  {
-    note.style.fontFamily = "Garamond, serif";
 
-    const prev_font_size = window.getComputedStyle(note)["font-size"];
-    note.style["font-size"] = `${(+prev_font_size.split("px")[0])+3}px`; // @TO-DO: use ``font-size-adjust`` or something similar (it's only supported in Firefox)
-  }
+    const widen_notes = true;
 
-  function apply_to_note_title_on_open(note_title, tags)
-  {
-    // increase width of the note itself (disabled by default)
+
+    function apply_to_note_part_on_open(note_part, tags)
+    {
+      note_part.style.fontFamily = "Garamond, serif";
+
+      const prev_font_size = window.getComputedStyle(note_part)["font-size"];
+      // @TO-DO: use ``font-size-adjust`` or something similar (it's only supported in Firefox).
+      note_part.style["font-size"] = `${(+prev_font_size.split("px")[0])+3}px`;
+    }
+
+    function apply_to_note_head_on_open(note_head, tags)
+    {
+      // Increase width of the note itself (disabled by default).
+      if (widen_notes)
+      {
+        let success = true;
+
+
+        for_each_nested_parent_of_note_part(note_head, function(parents, parents_len, parents_idx)
+        {
+          const parent = parents[parents_idx];
+
+          if (parent.tagName.toLowerCase() != "div")
+          {
+            if (parents_idx < 5)
+            {
+              success = false;
+
+              return true;
+            }
+            else
+            {
+              return false;
+            }
+          }
+
+          // 60 characters is the average length of a code line.
+          parent.style.width = "60em";
+
+          if (parents_idx == 4) return true; // break
+        });
+
+        if (!success) return true;
+      }
+    }
+
+    function apply_to_note_body_on_open(note_body, tags)
+    {
+      // example web-safe font cascade
+      note_body.style.fontFamily = "Courier New, monospace";
+      note_body.style.fontFamily = "Consolas, monospace";
+
+      const prev_font_size = window.getComputedStyle(note_body)["font-size"];
+      // @TO-DO: use ``font-size-adjust`` or something similar (it's only supported in Firefox).
+      note_body.style["font-size"] = `${(+prev_font_size.split("px")[0])-2}px`;
+    }
+
+    function apply_to_note_part_periodically(note_part, tags)
+    {
+      // Add styles to the whole note periodically.
+    }
+
+    function apply_to_note_head_periodically(note_head, tags)
+    {
+      // Add styles to the note head periodically.
+    }
+
+    function apply_to_note_body_periodically(note_body, tags)
+    {
+      // Add styles to the note body periodically.
+    }
+
+    // ↑↑↑ USER ZONE ↑↑↑ //
+
+
+    // ↓↓↓ USER HELPER FUNCTIONS ↓↓↓ //
+
+    function for_each_nested_parent_of_note_part(note_part, cb)
     {
       let parents = [];
 
@@ -44,7 +114,7 @@
       {
         if (parents_idx == 0)
         {
-          parents[parents_idx] = note_title.parentElement;
+          parents[parents_idx] = note_part.parentElement;
         }
         else
         {
@@ -59,199 +129,191 @@
 
       while (parents_idx < parents_len)
       {
-        // 60 characters is the average length of a code line.
-        // parents[parents_idx].style.width = "60em"; // Uncomment to widen notes.
+        if (cb(parents, parents_len, parents_idx)) break;
 
         ++parents_idx;
       }
     }
-  }
-
-  function apply_to_note_body_on_open(note_body, tags)
-  {
-    // example web-safe font cascade
-    note_body.style.fontFamily = "Courier New, monospace";
-    note_body.style.fontFamily = "Consolas, monospace";
-
-    const prev_font_size = window.getComputedStyle(note_body)["font-size"];
-    note_body.style["font-size"] = `${(+prev_font_size.split("px")[0])-2}px`; // @TO-DO: use ``font-size-adjust`` or something similar (it's only supported in Firefox)
-  }
-
-  function apply_to_note_periodically(note, tags)
-  {
-    // add styles to note periodically
-  }
-
-  function apply_to_note_title_periodically(note_title, tags)
-  {
-    // add styles to note_title periodically
-  }
-
-  function apply_to_note_body_periodically(note_body, tags)
-  {
-    // add styles to note_body periodically
-  }
-
-  // ↑↑↑ USER ZONE ↑↑↑ //
 
 
-  // ↓↓↓ USER HELPER FUNCTIONS ↓↓↓ //
-
-  function do_if_tag_found(tags, tag, cb)
-  {
-    alert("``do_if_tag_found`` is yet to be implemented!");
-  }
-
-
-  function for_each_snippet(note, cb) // @Unimplemented
-  {
-    const snippets = [];
-
-    alert("``for_each_snippet`` is yet to be implemented!");
-
-    const snippets_len = snippets.len;
-      let snippets_idx = 0;
-
-    while (snippets_idx < snippets_len)
+    function do_if_tag_found(tags, tag, cb)
     {
-      const block = false;
-      const name = undefined;
-      const text = `${""}`;
-
-      cb({ block, name, text });
-
-      ++snippets_idx;
+      alert("``do_if_tag_found`` is yet to be implemented!");
     }
-  }
 
-  function snippet_to_monospace(note, snippet) // @Unimplemented
-  {
-    if (snippet.block)
+
+    // @Unimplemented
+    function for_each_snippet(note_part, cb)
     {
-      note.innerHTML.indexOf(`\`\`\`${snippet.name}\n${snippet.text}\n\`\`\``);
-    }
-    else
-    {
-      note.innerHTML.indexOf(`\`\`${snippet.text}\`\``);
-    }
-  }
+      const snippets = [];
 
-  // ↑↑↑ USER HELPER FUNCTIONS ↑↑↑ //
+      alert("``for_each_snippet`` is yet to be implemented!");
 
+      const snippets_len = snippets.len;
+        let snippets_idx = 0;
 
-  // ↓↓↓ DEVELOPER ZONE ↓↓↓ //
+      while (snippets_idx < snippets_len)
+      {
+        const is_block = false;
+        const name = undefined;
+        const text = `${""}`;
 
-  async function main()
-  {
-    const elements = document.querySelectorAll("[contenteditable=\"true\"]");
-    const elements_len = elements.length;
+        if (cb({ is_block, name, text })) return true;
 
-    if (elements_len < 4)
-    {
+        ++snippets_idx;
+      }
+
       return false;
     }
 
-    let note_idx = 0;
-
-    if (elements_len <= (note_idx+2))
+    function snippet_to_monospace(note_part, snippet) // @Unimplemented
     {
-      return alert_app_has_changed();
-    }
-
-    let has_exitted_note = false;
-    (async function() {
-      has_exitted_note = (document.querySelectorAll("[contenteditable=\"true\"]").length != 4);
-      if (has_exitted_note) console.log("exit note"); return false;
-      await sleep(200); // @TO-DO: Wait for changes instead of periodically updating.
-    })();
-
-    try // Note is possibly undefined (if it gets closed after the check).
-    {
-      const note_title = elements[2];
-      const note_body  = elements[3];
-
-      const tags = [];
-
-      apply_to_note_on_open(note_title, tags);
-      apply_to_note_title_on_open(note_title, tags);
-
-      apply_to_note_on_open(note_body, tags);
-      apply_to_note_body_on_open(note_body, tags);
-    }
-    catch (err) {
-      console.warn(err);
-      return false;
-    }
-
-    while (elements_len > (note_idx+2))
-    {
-      if (has_exitted_note) return false;
-
-      const note = elements[note_idx+2];
-
-      const tags = [];
-
-      if (note_idx == 0)
+      if (snippet.is_block)
       {
-        try { // Note is possibly undefined (if it gets closed after the check).
-          apply_to_note_periodically(note, tags);
-          apply_to_note_title_periodically(note, tags);
-        } catch (err) {
-          console.warn(err);
-          return false;
-        }
+        note_part.innerHTML.indexOf(`\`\`\`${snippet.name}\n${snippet.text}\n\`\`\``);
       }
       else
-      if (note_idx == 1)
       {
-        try { // Note is possibly undefined (if it gets closed after the check).
-          apply_to_note_periodically(note, tags);
-          apply_to_note_body_periodically(note, tags);
-        } catch (err) {
-          console.warn(err);
-          return false;
-        }
+        note_part.innerHTML.indexOf(`\`\`${snippet.text}\`\``);
       }
-      else
+    }
+
+    // ↑↑↑ USER HELPER FUNCTIONS ↑↑↑ //
+
+
+    // ↓↓↓ DEVELOPER ZONE ↓↓↓ //
+
+    async function main()
+    {
+      const elements = document.querySelectorAll("[contenteditable=\"true\"]");
+      const elements_len = elements.length;
+
+      if (elements_len < 4)
+      {
+        return false;
+      }
+
+      let note_part_idx = 0;
+
+      if (elements_len <= (note_part_idx+2))
       {
         return alert_app_has_changed();
       }
 
-      const note_idx_before = note_idx;
-      note_idx = (note_idx + 1) % 2;
+      let has_exitted_note = false;
 
-      if (note_idx_before == 1) await sleep(1000); // @TO-DO: Wait for changes instead of periodically updating.
+      (async function()
+      {
+        has_exitted_note = (document.querySelectorAll("[contenteditable=\"true\"]").length != 4);
+
+        if (has_exitted_note) return;
+
+        // @TO-DO: Wait for changes instead of periodically updating.
+        await sleep(200);
+      })();
+
+      // Each note part should be undefined if the note gets closed after the check.
+      try
+      {
+        const note_head = elements[2];
+        const note_body = elements[3];
+
+        const tags = [];
+
+        if (apply_to_note_part_on_open(note_head, tags)) return true;
+        if (apply_to_note_head_on_open(note_head, tags)) return true;
+
+        if (apply_to_note_part_on_open(note_body, tags)) return true;
+        if (apply_to_note_body_on_open(note_body, tags)) return true;
+      }
+      catch (err)
+      {
+        return (
+          (err.message.indexOf("note_head is not defined") == -1) &&
+          (err.message.indexOf("note_body is not defined") == -1)
+        );
+      }
+
+      while (elements_len > (note_part_idx+2))
+      {
+        if (has_exitted_note) return false;
+
+        const note_part = elements[note_part_idx+2];
+
+        const tags = [];
+
+        if (note_part_idx == 0)
+        {
+          // Each note part should be undefined if the note gets closed after the check.
+          try
+          {
+            if (apply_to_note_part_periodically(note_part, tags)) return true;
+            if (apply_to_note_head_periodically(note_part, tags)) return true;
+          }
+          catch (err)
+          {
+            return (
+              (err.message.indexOf("note_part is not defined") == -1) &&
+              (err.message.indexOf("note_head is not defined") == -1)
+            );
+          }
+        }
+        else
+        if (note_part_idx == 1)
+        {
+          // Each note part should be undefined if the note gets closed after the check.
+          try
+          {
+            if (apply_to_note_part_periodically(note_part, tags)) return true;
+            if (apply_to_note_body_periodically(note_part, tags)) return true;
+          }
+          catch (err)
+          {
+            return (
+              (err.message.indexOf("note_part is not defined") == -1) &&
+              (err.message.indexOf("note_body is not defined") == -1)
+            );
+          }
+        }
+        else
+        {
+          return alert_app_has_changed();
+        }
+
+        const note_part_idx_before = note_part_idx;
+        note_part_idx = (note_part_idx + 1) % 2;
+
+        // @TO-DO: Wait for changes instead of periodically updating.
+        if (note_part_idx_before == 1) await sleep(1000);
+      }
     }
-  }
 
 
-  /**
-   * Notes update loop (only affects open notes).
-  **/
-  while (true)
-  {
-    if (await main()) break;
-    await sleep(200); // @TO-DO: Wait for changes instead of periodically updating.
-  }
+    // Notes update loop (only affects open notes).
+    while (true)
+    {
+      if (await main()) break;
+      await sleep(200); // @TO-DO: Wait for changes instead of periodically updating.
+    }
 
 
-  /**
-   * Must use ``await``.
-  **/
-  async function sleep(ms)
-  {
-    return (
-      new Promise((resolve) => setTimeout(resolve, ms))
-    );
-  }
+    /**
+     * Must use ``await``.
+    **/
+    async function sleep(ms)
+    {
+      return (
+        new Promise((resolve) => setTimeout(resolve, ms))
+      );
+    }
 
 
-  function alert_app_has_changed()
-  {
-    return confirm(
-      "Google-Keep-Notes-Styler says:\nSomething changed in the Google Keep Notes app since the creation of this script (it needs to be updated).\nClose the script?"
-    );
-  }
+    function alert_app_has_changed()
+    {
+      return confirm(
+        "Google-Keep-Notes-Styler says:\nSomething changed in the Google Keep Notes app since the creation of this script (it needs to be updated).\nClose the script?"
+      );
+    }
 
-  // ↑↑↑ DEVELOPER ZONE ↑↑↑ //
-})();
+    // ↑↑↑ DEVELOPER ZONE ↑↑↑ //
+  })();
