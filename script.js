@@ -59,7 +59,8 @@
 
       while (parents_idx < parents_len)
       {
-        // parents[parents_idx].style.width = "60em"; // 60 characters is the average length of a code line
+        // 60 characters is the average length of a code line.
+        // parents[parents_idx].style.width = "60em"; // Uncomment to widen notes.
 
         ++parents_idx;
       }
