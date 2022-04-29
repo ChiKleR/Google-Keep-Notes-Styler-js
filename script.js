@@ -1,8 +1,9 @@
 // ==UserScript==
-// @name         Google-Keep-Notes-Styler
-// @namespace    http://tampermonkey.net/
+// @short_name   GKeepNS
+// @name         Google-Keep-Notes-Styler-js
+// @namespace    https://github.com/ChiKleR/
 // @version      0.0.0
-// @description  Editable script for manually styling Google Keep Notes with utility functions. Affects only the visibility of the notes and resets on page refresh.
+// @description  Editable JavaScript userscript for manually styling Google Keep Notes with helper and utility functions. This version affects only the visualization of the notes while the script is running (it doesn't change the actual content).
 // @author       ChiKleR
 // @match        https://keep.google.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=google.com
