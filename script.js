@@ -20,6 +20,9 @@
   // Pending- Add a scroller for widened notes.
 
 
+"use strict";
+
+
 (async function() {
     "use strict";
 
