@@ -1,5 +1,4 @@
 // ==UserScript==
-// @short_name   GKeepNS
 // @name         Google-Keep-Notes-Styler-js
 // @namespace    https://github.com/ChiKleR/
 // @version      0.0.0
