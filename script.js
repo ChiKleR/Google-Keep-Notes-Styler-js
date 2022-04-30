@@ -29,7 +29,11 @@
     // ↓↓↓ USER ZONE ↓↓↓ //
 
 
+    const check_spelling = false;
+
     const widen_notes = true;
+    // 60em (monospace characters) is the average length of a code line.
+    const wide_note_width = "60em";
 
 
     function apply_to_note_part_on_open(note_part, tags)
@@ -39,6 +43,9 @@
       const prev_font_size = window.getComputedStyle(note_part)["font-size"];
       // @TO-DO: use ``font-size-adjust`` or something similar (it's only supported in Firefox).
       note_part.style["font-size"] = `${(+prev_font_size.split("px")[0])+3}px`;
+
+
+      note_part.spellcheck = check_spelling;
     }
 
     function apply_to_note_head_on_open(note_head, tags)
@@ -46,35 +53,16 @@
       // Increase width of the note itself (disabled by default).
       if (widen_notes)
       {
-        let success = true;
-
-
-        for_each_nested_parent_of_note_part(note_head, function(parents, parents_len, parents_idx)
+        if (for_each_nested_parent_of_note_part(note_head, function(parent, parents_len, parents_idx)
         {
-          const parent = parents[parents_idx];
+          parent.style.width = wide_note_width;
 
-          if (parent.tagName.toLowerCase() != "div")
-          {
-            if (parents_idx < 5)
-            {
-              success = false;
+          parent.classList.add("nested_parent_of_note_part");
 
-              return true;
-            }
-            else
-            {
-              return false;
-            }
-          }
-
-          // 60 characters is the average length of a code line.
-          parent.style.width = "60em";
-
-          if (parents_idx == 4) return true; // break
-        });
-
-        if (!success) return true;
+        })) return true;
       }
+
+      // Add styles to the note head on open.
     }
 
     function apply_to_note_body_on_open(note_body, tags)
@@ -88,19 +76,19 @@
       note_body.style["font-size"] = `${(+prev_font_size.split("px")[0])-2}px`;
     }
 
-    function apply_to_note_part_periodically(note_part, tags)
+    function apply_to_note_part_on_update(note_part, tags)
     {
-      // Add styles to the whole note periodically.
+      // Add styles to the whole note on_update.
     }
 
-    function apply_to_note_head_periodically(note_head, tags)
+    function apply_to_note_head_on_update(note_head, tags)
     {
-      // Add styles to the note head periodically.
+      // Add styles to the note head on_update.
     }
 
-    function apply_to_note_body_periodically(note_body, tags)
+    function apply_to_note_body_on_update(note_body, tags)
     {
-      // Add styles to the note body periodically.
+      // Add styles to the note body on_update.
     }
 
     // ↑↑↑ USER ZONE ↑↑↑ //
@@ -108,33 +96,34 @@
 
     // ↓↓↓ USER HELPER FUNCTIONS ↓↓↓ //
 
+    // Affects all the elements that make the note.
+    // cb(parent, parents_len, parents_idx);
     function for_each_nested_parent_of_note_part(note_part, cb)
     {
-      let parents = [];
+      let parent = note_part;
 
-      for (let parents_idx = 0; parents_idx < 5; parents_idx++)
+      const parents_len = 5;
+        let parents_idx = 0;
+
+      while (parents_len > parents_idx)
       {
-        if (parents_idx == 0)
+        if (parents_idx != 0) parent = parent.parentElement;
+
+        if (parent.tagName.toLowerCase() == "div")
         {
-          parents[parents_idx] = note_part.parentElement;
+          if (cb(
+            parent,
+            parents_len,
+            parents_idx++
+          )) break;
         }
         else
         {
-          parents[parents_idx] = parents[parents_idx - 1].parentElement;
+          return alert_app_has_changed();
         }
-
-        if (parents[parents_idx].tagName.toLowerCase() != "div") return;
       }
 
-      const parents_len = parents.length;
-        let parents_idx = 0;
-
-      while (parents_idx < parents_len)
-      {
-        if (cb(parents, parents_len, parents_idx)) break;
-
-        ++parents_idx;
-      }
+      return false;
     }
 
 
@@ -149,35 +138,26 @@
     {
       const snippets = [];
 
+      // use note_part.innerHTML.indexOf
+        const text_index_begin = undefined;
+        const text_index_close = undefined;
+        const is_block = undefined;
+        const name = undefined;
+        const text = undefined;
+
       alert("``for_each_snippet`` is yet to be implemented!");
 
       const snippets_len = snippets.len;
         let snippets_idx = 0;
 
-      while (snippets_idx < snippets_len)
+      while (snippets_len > snippets_idx)
       {
-        const is_block = false;
-        const name = undefined;
-        const text = `${""}`;
+        const snippet = snippets[snippets_idx++];
 
-        if (cb({ is_block, name, text })) return true;
-
-        ++snippets_idx;
+        if (cb(snippet)) return true;
       }
 
       return false;
-    }
-
-    function snippet_to_monospace(note_part, snippet) // @Unimplemented
-    {
-      if (snippet.is_block)
-      {
-        note_part.innerHTML.indexOf(`\`\`\`${snippet.name}\n${snippet.text}\n\`\`\``);
-      }
-      else
-      {
-        note_part.innerHTML.indexOf(`\`\`${snippet.text}\`\``);
-      }
     }
 
     // ↑↑↑ USER HELPER FUNCTIONS ↑↑↑ //
@@ -187,20 +167,20 @@
 
     async function main()
     {
-      const elements = document.querySelectorAll("[contenteditable=\"true\"]");
-      const elements_len = elements.length;
+      const note_parts = document.querySelectorAll("[contenteditable=\"true\"][spellcheck]");
+      const note_parts_len = note_parts.length;
 
-      if (elements_len < 4)
+      if (note_parts_len == 0)
       {
         return false;
       }
-
-      let note_part_idx = 0;
-
-      if (elements_len <= (note_part_idx+2))
+      else
+      if (note_parts_len != 2)
       {
         return alert_app_has_changed();
       }
+
+      let note_part_idx = 0;
 
 
       // Even if a note is closed after being checked, the DOM element won't be
@@ -210,16 +190,22 @@
 
       (async function()
       {
-        has_exitted_note = (document.querySelectorAll("[contenteditable=\"true\"]").length != 4);
+        has_exitted_note = (document.querySelectorAll("[contenteditable=\"true\"][spellcheck]").length == 0);
 
-        if (has_exitted_note) return;
-
-        // @TO-DO: Wait for changes instead of periodically updating.
-        await sleep(200);
+        if (has_exitted_note)
+        {
+          return;
+        }
+        else
+        {
+          // @TO-DO: Wait for changes instead of on_update updating.
+          await sleep(200);
+        }
       })();
 
-      const note_head = elements[2];
-      const note_body = elements[3];
+
+      const note_head = note_parts[0];
+      const note_body = note_parts[1];
 
       const tags = [];
 
@@ -229,35 +215,19 @@
       if (apply_to_note_part_on_open(note_body, tags)) return true;
       if (apply_to_note_body_on_open(note_body, tags)) return true;
 
-      while (elements_len > (note_part_idx+2))
+      while (true)
       {
         if (has_exitted_note) return false;
 
-        const note_part = elements[note_part_idx+2];
-
         const tags = [];
 
-        if (note_part_idx == 0)
-        {
-          if (apply_to_note_part_periodically(note_part, tags)) return true;
-          if (apply_to_note_head_periodically(note_part, tags)) return true;
-        }
-        else
-        if (note_part_idx == 1)
-        {
-          if (apply_to_note_part_periodically(note_part, tags)) return true;
-          if (apply_to_note_body_periodically(note_part, tags)) return true;
-        }
-        else
-        {
-          return alert_app_has_changed();
-        }
+        if (apply_to_note_part_on_update(note_head, tags)) return true;
+        if (apply_to_note_head_on_update(note_head, tags)) return true;
 
-        const note_part_idx_before = note_part_idx;
-        note_part_idx = (note_part_idx + 1) % 2;
+        if (apply_to_note_part_on_update(note_body, tags)) return true;
+        if (apply_to_note_body_on_update(note_body, tags)) return true;
 
-        // @TO-DO: Wait for changes instead of periodically updating.
-        if (note_part_idx_before == 1) await sleep(1000);
+        await sleep(1000);
       }
     }
 
@@ -266,7 +236,7 @@
     while (true)
     {
       if (await main()) break;
-      await sleep(200); // @TO-DO: Wait for changes instead of periodically updating.
+      await sleep(200); // @TO-DO: Wait for changes instead of on_update updating.
     }
 
 
